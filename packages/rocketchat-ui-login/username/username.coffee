@@ -35,6 +35,7 @@ Template.username.events
 
 		Meteor.call 'setUsername', value, (err, result) ->
 			if err?
+				console.log err
 				if err.error is 'username-invalid'
 					username.invalid = true
 				else
@@ -46,4 +47,4 @@ Template.username.events
 
 			if not err?
 				Meteor.call 'joinDefaultChannels'
-				FlowRouter.go 'index'
+

@@ -8,7 +8,6 @@ RocketChat.roomTypes = new class
 	@param order Order number of the type
 	@param config
 		template: template name to render on sideNav
-		permissions: list of permissions to see the sideNav template
 		icon: icon class
 		route:
 			name: route name
@@ -47,14 +46,16 @@ RocketChat.roomTypes = new class
 
 		return FlowRouter.path roomTypes[roomType].route.name, roomTypes[roomType].route.link(subData)
 
+	checkCondition = (roomType) ->
+		return not roomType.condition? or roomType.condition()
+
 	getAllTypes = ->
-		typesPermitted = []
+		orderedTypes = []
 
 		_.sortBy(roomTypesOrder, 'order').forEach (type) ->
-			if not roomTypes[type.identifier].permissions? or RocketChat.authz.hasAtLeastOnePermission roomTypes[type.identifier].permissions
-				typesPermitted.push roomTypes[type.identifier]
+			orderedTypes.push roomTypes[type.identifier]
 
-		return typesPermitted
+		return orderedTypes
 
 	getIcon = (roomType) ->
 		return roomTypes[roomType]?.icon
@@ -73,5 +74,7 @@ RocketChat.roomTypes = new class
 
 	# setRoute: setRoute
 	getRouteLink: getRouteLink
+
+	checkCondition: checkCondition
 
 	add: add
